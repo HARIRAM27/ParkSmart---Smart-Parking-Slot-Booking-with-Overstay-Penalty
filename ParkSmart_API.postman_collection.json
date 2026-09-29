@@ -1,0 +1,1061 @@
+{
+	"info": {
+		"_postman_id": "parksmart-api-collection-v1",
+		"name": "ParkSmart API Collection",
+		"description": "Comprehensive Postman Collection for ParkSmart – Smart Parking Slot Booking System with Overstay Penalty.\nIncludes endpoints for Authentication, Parking Lots, Parking Slots, Bookings, Check-In/Out with Real-time Overstay Penalty, and User Management with Role-Based Access Control (ADMIN, PARKING_MANAGER, CUSTOMER).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "manager_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "customer_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"Password@123\",\n  \"phoneNumber\": \"9876543210\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers a new user with CUSTOMER role."
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('admin_token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@1234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Logs in the default Admin account and extracts JWT to admin_token variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Login Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('customer_token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"password\": \"Password@123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Logs in Customer account and extracts JWT to customer_token variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Login Manager",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('manager_token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"manager1\",\n  \"password\": \"Password@123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Logs in Manager account and extracts JWT to manager_token variable."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Parking Lots (Parking Manager)",
+			"item": [
+				{
+					"name": "Get All Lots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Parking Lot (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lotName\": \"Grand Central Hub\",\n  \"location\": \"Station Road, Central\",\n  \"totalSlots\": 50,\n  \"penaltyRate\": 50.00,\n  \"penaltyUnitMinutes\": 30\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lot by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lots/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Parking Lot (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lotName\": \"Grand Central Hub Updated\",\n  \"location\": \"Station Road, Central\",\n  \"totalSlots\": 60,\n  \"penaltyRate\": 60.00,\n  \"penaltyUnitMinutes\": 30\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lots/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Parking Lot (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lots/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Parking Slots (Parking Manager)",
+			"item": [
+				{
+					"name": "Get All Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/slots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"slots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Slot (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"slotNumber\": \"C-101\",\n  \"slotType\": \"CAR\",\n  \"status\": \"ACTIVE\",\n  \"parkingLot\": {\n    \"id\": 1\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/slots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"slots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Slots by Lot",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/slots/lot/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"slots",
+								"lot",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Slot (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"slotNumber\": \"C-101\",\n  \"slotType\": \"CAR\",\n  \"status\": \"ACTIVE\",\n  \"parkingLot\": {\n    \"id\": 1\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/slots/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"slots",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Slot (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/slots/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"slots",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Bookings (Customer)",
+			"item": [
+				{
+					"name": "Search Available Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/available/1?startTime=2026-10-01T10:00:00&endTime=2026-10-01T12:00:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"available",
+								"1"
+							],
+							"query": [
+								{
+									"key": "startTime",
+									"value": "2026-10-01T10:00:00"
+								},
+								{
+									"key": "endTime",
+									"value": "2026-10-01T12:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Booking (Customer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"slot\": {\n    \"id\": 1\n  },\n  \"customerName\": \"johndoe\",\n  \"vehicleNumber\": \"KA-05-MN-5678\",\n  \"startTime\": \"2026-10-01T10:00:00\",\n  \"endTime\": \"2026-10-01T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Bookings (Customer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/my",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel My Booking (Customer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Check-In & Check-Out (Parking Manager)",
+			"item": [
+				{
+					"name": "Check-In Booking (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkinout/checkin/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkinout",
+								"checkin",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check-Out Booking (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkinout/checkout/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkinout",
+								"checkout",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Check-in Records (Manager/Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkinout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkinout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Check-in by Booking ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkinout/booking/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkinout",
+								"booking",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Check-in Records (Customer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkinout/my",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkinout",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lot Occupancy (Manager/Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkinout/occupancy/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkinout",
+								"occupancy",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. User Management (Admin Only)",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"manager1\",\n  \"email\": \"manager1@example.com\",\n  \"password\": \"Password@123\",\n  \"phoneNumber\": \"9876543210\",\n  \"role\": \"PARKING_MANAGER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Role (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/users/1/role?role=PARKING_MANAGER",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"users",
+								"1",
+								"role"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "PARKING_MANAGER"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle User Status (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/users/1/toggle",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"users",
+								"1",
+								"toggle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable User (PATCH status)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/users/1/status?enabled=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"users",
+								"1",
+								"status"
+							],
+							"query": [
+								{
+									"key": "enabled",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/users/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

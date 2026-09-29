@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkSmart</title>
+    <script>
+        // Immediately redirect – no flash of content
+        (function() {
+            const token = localStorage.getItem('token');
+            const user  = JSON.parse(localStorage.getItem('user') || '{}');
+            if (token && user.role) {
+                if (user.role === 'ADMIN') location.replace('/admin.html');
+                else if (user.role === 'PARKING_MANAGER') location.replace('/manager.html');
+                else location.replace('/customer.html');
+            } else {
+                location.replace('/login.html');
+            }
+        })();
+    </script>
+</head>
+<body></body>
+</html>

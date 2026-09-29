@@ -1,0 +1,254 @@
+/* ============================================================
+   ParkSmart – Auth Page Styles (login / register)
+   ============================================================ */
+
+body.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e3a5f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* ---------- Auth Container ---------- */
+.auth-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 440px;
+    gap: 24px;
+}
+
+.auth-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.auth-logo-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    box-shadow: 0 8px 24px rgba(37,99,235,0.4);
+}
+
+.auth-logo h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.auth-logo p {
+    font-size: 0.875rem;
+    color: #94a3b8;
+}
+
+/* ---------- Auth Card ---------- */
+.auth-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    overflow: hidden;
+}
+
+.auth-card-header {
+    padding: 26px 30px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.auth-card-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.auth-card-header p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.auth-card-body {
+    padding: 26px 30px;
+}
+
+/* ---------- Auth Form ---------- */
+.auth-form .form-group {
+    margin-bottom: 18px;
+}
+
+.auth-form label {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper .input-icon {
+    position: absolute;
+    left: 13px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.input-wrapper input {
+    padding-left: 38px !important;
+}
+
+.auth-form input,
+.auth-form select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    color: var(--text);
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    font-family: inherit;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
+}
+
+.auth-form input.error {
+    border-color: var(--danger);
+    background: #fff5f5;
+}
+
+.field-error {
+    font-size: 0.78rem;
+    color: var(--danger);
+    margin-top: 4px;
+    display: none;
+}
+
+.field-error.show { display: block; }
+
+/* ---------- Submit Button ---------- */
+.auth-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.auth-submit:hover   { background: var(--primary-dark); }
+.auth-submit:active  { transform: scale(0.98); }
+.auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ---------- Auth Alert ---------- */
+.auth-alert {
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    margin-bottom: 16px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-alert.show { display: flex; }
+
+.auth-alert-error {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.auth-alert-success {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+/* ---------- Auth Footer ---------- */
+.auth-card-footer {
+    padding: 16px 30px 22px;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    background: #f8fafc;
+}
+
+.auth-card-footer a {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* ---------- Password Toggle ---------- */
+.pw-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.pw-toggle:hover { color: var(--text); }
+
+/* ---------- Divider ---------- */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+    .auth-card-body    { padding: 20px 18px; }
+    .auth-card-header  { padding: 20px 18px 14px; }
+    .auth-card-footer  { padding: 14px 18px 18px; }
+    .auth-wrapper { max-width: 100%; }
+}

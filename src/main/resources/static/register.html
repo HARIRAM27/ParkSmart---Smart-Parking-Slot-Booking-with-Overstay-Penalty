@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account – ParkSmart</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-wrapper">
+    <!-- Brand -->
+    <div class="auth-logo">
+        <div class="auth-logo-icon">🅿</div>
+        <h1>ParkSmart</h1>
+        <p>Smart Parking Management System</p>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+        <div class="auth-card-header">
+            <h2>Create your account</h2>
+            <p>Fill in the details below to get started</p>
+        </div>
+
+        <div class="auth-card-body">
+            <!-- Alert -->
+            <div class="auth-alert" id="register-alert" role="alert">
+                <span id="register-alert-msg"></span>
+            </div>
+
+            <form id="register-form" class="auth-form" novalidate autocomplete="off">
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Choose a username (min 3 chars)"
+                            autocomplete="username"
+                            required minlength="3"
+                        >
+                    </div>
+                    <span class="field-error" id="username-error"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+                    <span class="field-error" id="email-error"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="At least 6 characters"
+                            autocomplete="new-password"
+                            required minlength="6"
+                        >
+                        <button type="button" class="pw-toggle" id="pw-toggle" title="Toggle password">👁</button>
+                    </div>
+                    <span class="field-error" id="password-error"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="confirm-password"
+                            name="confirm-password"
+                            placeholder="Re-enter your password"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button type="button" class="pw-toggle" id="pw2-toggle" title="Toggle password">👁</button>
+                    </div>
+                    <span class="field-error" id="confirm-password-error"></span>
+                </div>
+
+                <button type="submit" class="auth-submit" id="register-submit">Create Account</button>
+            </form>
+        </div>
+
+        <div class="auth-card-footer">
+            Already have an account? <a href="/login.html">Sign in</a>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/register.js"></script>
+</body>
+</html>

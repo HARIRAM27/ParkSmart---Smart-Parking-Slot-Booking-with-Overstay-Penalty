@@ -36,4 +36,7 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
             Long lotId,
             BookingStatus status
     );
+
+    // For customer ownership queries
+    List<Booking> findByUserId(Long userId);
 }

@@ -80,4 +80,25 @@ public class Slot {
     public void setParkingLot(ParkingLot parkingLot) {
         this.parkingLot = parkingLot;
     }
+
+    // Compatibility aliases for frontend JSON (type <-> slotType, lot <-> parkingLot)
+    public SlotType getType() {
+        return slotType;
+    }
+
+    public void setType(SlotType type) {
+        if (this.slotType == null) {
+            this.slotType = type;
+        }
+    }
+
+    public ParkingLot getLot() {
+        return parkingLot;
+    }
+
+    public void setLot(ParkingLot lot) {
+        if (this.parkingLot == null) {
+            this.parkingLot = lot;
+        }
+    }
 }

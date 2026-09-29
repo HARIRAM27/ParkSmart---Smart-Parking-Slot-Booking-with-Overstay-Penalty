@@ -2,6 +2,7 @@ package com.example.parksmart.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.example.parksmart.Enums.BookingStatus;
 
 import jakarta.persistence.Entity;
@@ -48,6 +49,10 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"password", "hibernateLazyInitializer", "handler"})
+    private User user;
 
     public Long getId() {
         return id;
@@ -103,5 +108,13 @@ public class Booking {
 
     public void setStatus(BookingStatus status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

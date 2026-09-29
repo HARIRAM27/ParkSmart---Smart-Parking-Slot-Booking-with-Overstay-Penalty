@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.parksmart.model.ParkingLot;
 import com.example.parksmart.service.ParkingLotService;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 @RestController
@@ -31,6 +32,7 @@ public class ParkingLotController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('PARKING_MANAGER')")
     public ResponseEntity<ParkingLot> create(
             @Valid @RequestBody ParkingLot parkingLot) {
 
@@ -52,6 +54,7 @@ public class ParkingLotController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('PARKING_MANAGER')")
     public ResponseEntity<ParkingLot> update(
             @PathVariable Long id,
             @Valid @RequestBody ParkingLot parkingLot) {
@@ -62,6 +65,7 @@ public class ParkingLotController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PARKING_MANAGER')")
     public ResponseEntity<Void> delete(
             @PathVariable Long id) {
 

@@ -91,4 +91,9 @@ public class CheckInOut {
     public void setPenaltyAmount(BigDecimal penaltyAmount) {
         this.penaltyAmount = penaltyAmount;
     }
+
+    // Compatibility alias for frontend JSON (penalty <-> penaltyAmount)
+    public BigDecimal getPenalty() {
+        return penaltyAmount;
+    }
 }

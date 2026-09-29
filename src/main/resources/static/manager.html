@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard – ParkSmart</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="layout">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">🅿</div>
+            ParkSmart
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-label">Overview</div>
+            <button class="nav-item active" data-section="dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Dashboard</span>
+            </button>
+
+            <div class="sidebar-section-label">Management</div>
+            <button class="nav-item" data-section="lots">
+                <span class="nav-icon">🏢</span>
+                <span class="nav-label">Parking Lots</span>
+            </button>
+            <button class="nav-item" data-section="slots">
+                <span class="nav-icon">🔲</span>
+                <span class="nav-label">Slots</span>
+            </button>
+            <button class="nav-item" data-section="bookings">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">Bookings</span>
+            </button>
+
+            <div class="sidebar-section-label">Operations</div>
+            <button class="nav-item" data-section="checkinout">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-label">Check-in / Out</span>
+            </button>
+            <button class="nav-item" data-section="occupancy">
+                <span class="nav-icon">📈</span>
+                <span class="nav-label">Occupancy</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ==================== MAIN ==================== -->
+    <main class="main-content">
+        <header class="topbar">
+            <h1 id="page-title">Dashboard</h1>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="user-avatar" id="user-avatar">M</div>
+                    <span id="username-display">Manager</span>
+                    <span class="badge badge-warning" style="margin-left:4px">MANAGER</span>
+                </div>
+                <button class="btn btn-sm btn-danger" onclick="logout()">🚪 Logout</button>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- ====== DASHBOARD ====== -->
+            <section class="section active" data-section="dashboard">
+                <div class="page-header">
+                    <h2>Welcome, <span id="dash-username">Manager</span>!</h2>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏢</div>
+                        <div class="stat-label">Parking Lots</div>
+                        <div class="stat-value" id="stat-lots">–</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">🔲</div>
+                        <div class="stat-label">Total Slots</div>
+                        <div class="stat-value" id="stat-slots">–</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-label">Active Bookings</div>
+                        <div class="stat-value" id="stat-bookings">–</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-icon">🚗</div>
+                        <div class="stat-label">Checked-in Records</div>
+                        <div class="stat-value" id="stat-checkins">–</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h2>Quick Actions</h2></div>
+                    <div class="card-body padded">
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="gotoSection('lots')">🏢 Manage Lots</button>
+                            <button class="btn btn-success" onclick="gotoSection('slots')">🔲 Manage Slots</button>
+                            <button class="btn btn-warning" onclick="gotoSection('checkinout')">🚗 Check-in/Out</button>
+                            <button class="btn btn-secondary" onclick="gotoSection('occupancy')">📈 Occupancy</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== PARKING LOTS (Full CRUD) ====== -->
+            <section class="section" data-section="lots">
+                <div class="page-header">
+                    <h2>Parking Lots</h2>
+                    <button class="btn btn-primary" onclick="openModal('lot-modal'); resetLotForm()">➕ Add Lot</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>All Parking Lots</h2>
+                        <button class="btn btn-ghost btn-sm" onclick="loadLots()">↻ Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Lot Name</th><th>Location</th>
+                                        <th>Total Slots</th><th>Penalty Rate (₹)</th><th>Penalty Unit (Mins)</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lots-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== SLOTS (full CRUD) ====== -->
+            <section class="section" data-section="slots">
+                <div class="page-header">
+                    <h2>Parking Slots</h2>
+                    <button class="btn btn-primary" onclick="openModal('slot-modal'); resetSlotForm()">➕ Add Slot</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>All Slots</h2>
+                        <div class="toolbar">
+                            <select id="slots-lot-filter" onchange="loadSlots()">
+                                <option value="">All Lots</option>
+                            </select>
+                            <button class="btn btn-ghost btn-sm" onclick="loadSlots()">↻ Refresh</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Slot Number</th><th>Type</th>
+                                        <th>Status</th><th>Lot</th><th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="slots-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== BOOKINGS ====== -->
+            <section class="section" data-section="bookings">
+                <div class="page-header">
+                    <h2>Bookings</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadBookings()">↻ Refresh</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h2>All Bookings</h2></div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Customer</th><th>Vehicle</th>
+                                        <th>Slot</th><th>Start Time</th><th>End Time</th>
+                                        <th>Status</th><th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookings-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== CHECK-IN / OUT ====== -->
+            <section class="section" data-section="checkinout">
+                <div class="page-header"><h2>Check-in / Check-out</h2></div>
+
+                <div class="card" style="margin-bottom:20px">
+                    <div class="card-header"><h2>Quick Actions</h2></div>
+                    <div class="card-body padded">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                            <div>
+                                <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:10px;color:var(--success)">🟢 Check-in</h3>
+                                <div class="inline-form">
+                                    <div class="form-group" style="margin:0;flex:1">
+                                        <input type="number" id="checkin-booking-id" placeholder="Booking ID" min="1">
+                                    </div>
+                                    <button class="btn btn-success" onclick="doCheckin()">Check In</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:10px;color:var(--danger)">🔴 Check-out</h3>
+                                <div class="inline-form">
+                                    <div class="form-group" style="margin:0;flex:1">
+                                        <input type="number" id="checkout-booking-id" placeholder="Booking ID" min="1">
+                                    </div>
+                                    <button class="btn btn-danger" onclick="doCheckout()">Check Out</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Records</h2>
+                        <button class="btn btn-ghost btn-sm" onclick="loadCheckinRecords()">↻ Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Booking ID</th><th>Customer</th>
+                                        <th>Check-in</th><th>Check-out</th><th>Penalty</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="checkinout-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== OCCUPANCY ====== -->
+            <section class="section" data-section="occupancy">
+                <div class="page-header"><h2>Lot Occupancy</h2></div>
+
+                <div class="card">
+                    <div class="card-header"><h2>Check Occupancy</h2></div>
+                    <div class="card-body padded">
+                        <div class="inline-form">
+                            <div class="form-group" style="margin:0">
+                                <label>Select Lot</label>
+                                <select id="occupancy-lot-select" style="padding:9px 13px;border:1px solid var(--border);border-radius:var(--radius);font-size:0.875rem;min-width:200px">
+                                    <option value="">Select a lot…</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="checkOccupancy()" style="margin-top:22px">Check</button>
+                        </div>
+                        <div id="occupancy-result" style="margin-top:16px;display:none">
+                            <div class="info-panel">
+                                <strong>Occupancy:</strong>
+                                <span id="occupancy-text"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Lot Modal -->
+<div class="modal-overlay" id="lot-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="lot-modal-title">Add Parking Lot</h3>
+            <button class="modal-close" onclick="closeModal('lot-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="lot-id">
+            <div class="form-group">
+                <label>Lot Name *</label>
+                <input type="text" id="lot-name" placeholder="e.g. Central Parking" required>
+            </div>
+            <div class="form-group">
+                <label>Location *</label>
+                <input type="text" id="lot-location" placeholder="e.g. 123 Main Street" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Total Slots</label>
+                    <input type="number" id="lot-total-slots" placeholder="e.g. 100" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Penalty Rate (₹) *</label>
+                    <input type="number" id="lot-penalty-rate" placeholder="e.g. 50" min="0" step="0.01" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Penalty Unit (Minutes) *</label>
+                <input type="number" id="lot-penalty-unit-minutes" placeholder="e.g. 30, 60 (for 1 hour)" min="1" value="30" required>
+                <span class="form-hint">Duration unit in minutes used for overstay penalty calculation</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('lot-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveLot()">Save Lot</button>
+        </div>
+    </div>
+</div>
+
+<!-- Slot Modal -->
+<div class="modal-overlay" id="slot-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="slot-modal-title">Add Slot</h3>
+            <button class="modal-close" onclick="closeModal('slot-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="slot-id">
+            <div class="form-group">
+                <label>Parking Lot *</label>
+                <select id="slot-lot-id" required></select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Slot Number *</label>
+                    <input type="text" id="slot-number" placeholder="e.g. A-01" required>
+                </div>
+                <div class="form-group">
+                    <label>Slot Type</label>
+                    <select id="slot-type">
+                        <option value="CAR">Car</option>
+                        <option value="BIKE">Bike</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="slot-status">
+                    <option value="ACTIVE">Active</option>
+                    <option value="OUT_OF_SERVICE">Out of Service</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('slot-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveSlot()">Save Slot</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/manager.js"></script>
+</body>
+</html>

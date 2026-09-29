@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard – ParkSmart</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="layout">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">🅿</div>
+            ParkSmart
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-label">Overview</div>
+            <button class="nav-item active" data-section="dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Dashboard</span>
+            </button>
+
+            <div class="sidebar-section-label">Parking</div>
+            <button class="nav-item" data-section="find">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Find Parking</span>
+            </button>
+            <button class="nav-item" data-section="mybookings">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">My Bookings</span>
+            </button>
+            <button class="nav-item" data-section="history">
+                <span class="nav-icon">🕐</span>
+                <span class="nav-label">Booking History</span>
+            </button>
+
+            <div class="sidebar-section-label">Account</div>
+            <button class="nav-item" data-section="checkininfo">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-label">Check-ins & Penalties</span>
+            </button>
+            <button class="nav-item" data-section="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ==================== MAIN ==================== -->
+    <main class="main-content">
+        <header class="topbar">
+            <h1 id="page-title">Dashboard</h1>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <div class="user-avatar" id="user-avatar">C</div>
+                    <span id="username-display">Customer</span>
+                    <span class="badge badge-primary" style="margin-left:4px">CUSTOMER</span>
+                </div>
+                <button class="btn btn-sm btn-danger" onclick="logout()">🚪 Logout</button>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- ====== DASHBOARD ====== -->
+            <section class="section active" data-section="dashboard">
+                <div class="page-header">
+                    <h2>Welcome, <span id="dash-username">!</span></h2>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🟢</div>
+                        <div class="stat-label">Active Bookings</div>
+                        <div class="stat-value" id="stat-active">–</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-label">Upcoming Bookings</div>
+                        <div class="stat-value" id="stat-upcoming">–</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-label">Completed</div>
+                        <div class="stat-value" id="stat-completed">–</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-label">Cancelled</div>
+                        <div class="stat-value" id="stat-cancelled">–</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h2>Quick Actions</h2></div>
+                    <div class="card-body padded">
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="gotoSection('find')">🔍 Find Parking</button>
+                            <button class="btn btn-success" onclick="gotoSection('mybookings')">📋 My Bookings</button>
+                            <button class="btn btn-secondary" onclick="gotoSection('checkininfo')">🚗 Check-ins & Penalties</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== FIND PARKING ====== -->
+            <section class="section" data-section="find">
+                <div class="page-header"><h2>Find Parking</h2></div>
+
+                <!-- Search Form -->
+                <div class="card" style="margin-bottom:20px">
+                    <div class="card-header"><h2>Search Available Slots</h2></div>
+                    <div class="card-body padded">
+                        <div class="form-row" style="margin-bottom:0">
+                            <div class="form-group">
+                                <label>Parking Lot *</label>
+                                <select id="find-lot" required>
+                                    <option value="">Loading lots…</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Start Date & Time *</label>
+                                <input type="datetime-local" id="find-start" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>End Date & Time *</label>
+                                <input type="datetime-local" id="find-end" required>
+                            </div>
+                            <div class="form-group" style="justify-content:flex-end;align-items:flex-end">
+                                <button class="btn btn-primary" onclick="searchAvailableSlots()" style="width:100%">🔍 Search Slots</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="card" id="find-results-card" style="display:none">
+                    <div class="card-header"><h2>Available Slots</h2></div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Slot Number</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Lot</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="available-slots-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== MY BOOKINGS ====== -->
+            <section class="section" data-section="mybookings">
+                <div class="page-header">
+                    <h2>My Bookings</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadMyBookings()">↻ Refresh</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Slot</th><th>Vehicle</th>
+                                        <th>Start</th><th>End</th><th>Status</th><th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mybookings-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== BOOKING HISTORY ====== -->
+            <section class="section" data-section="history">
+                <div class="page-header">
+                    <h2>Booking History</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadBookingHistory()">↻ Refresh</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Slot</th><th>Vehicle</th>
+                                        <th>Start</th><th>End</th><th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== CHECK-IN INFO & PENALTIES ====== -->
+            <section class="section" data-section="checkininfo">
+                <div class="page-header">
+                    <h2>Check-ins & Overstay Penalties</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadMyCheckins()">↻ Refresh</button>
+                </div>
+
+                <div class="card" style="margin-bottom:24px">
+                    <div class="card-header"><h2>My Check-in Records</h2></div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Booking ID</th>
+                                        <th>Slot / Lot</th>
+                                        <th>Check-in Time</th>
+                                        <th>Check-out Time</th>
+                                        <th>Overstay (Mins)</th>
+                                        <th>Penalty Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mycheckins-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="max-width:550px">
+                    <div class="card-header"><h2>Single Booking Check-in Lookup</h2></div>
+                    <div class="card-body padded">
+                        <div class="inline-form">
+                            <div class="form-group" style="margin:0;flex:1">
+                                <label>Booking ID</label>
+                                <input type="number" id="lookup-booking-id" placeholder="Enter your booking ID" min="1">
+                            </div>
+                            <button class="btn btn-primary" onclick="lookupCheckin()" style="margin-top:22px">Look Up</button>
+                        </div>
+
+                        <div id="checkin-detail" style="display:none;margin-top:20px">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label>Booking ID</label>
+                                    <span id="ci-booking-id">–</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Customer</label>
+                                    <span id="ci-customer">–</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Check-in Time</label>
+                                    <span id="ci-checkin">–</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Check-out Time</label>
+                                    <span id="ci-checkout">–</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Overstay Minutes</label>
+                                    <span id="ci-overstay">–</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Penalty Amount</label>
+                                    <span id="ci-penalty">–</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="checkin-not-found" style="display:none">
+                            <div class="info-panel" style="background:#fff5f5;border-color:#fecaca;color:#b91c1c">
+                                No check-in/out record found for this booking.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== PROFILE ====== -->
+            <section class="section" data-section="profile">
+                <div class="page-header"><h2>My Profile</h2></div>
+
+                <div class="profile-card" style="margin:0 auto">
+                    <div class="profile-avatar" id="profile-avatar">?</div>
+                    <ul class="profile-info">
+                        <li>
+                            <span class="pi-label">Username</span>
+                            <span id="profile-username">–</span>
+                        </li>
+                        <li>
+                            <span class="pi-label">Email</span>
+                            <span id="profile-email">–</span>
+                        </li>
+                        <li>
+                            <span class="pi-label">Role</span>
+                            <span id="profile-role">–</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- ==================== BOOKING MODAL ==================== -->
+<div class="modal-overlay" id="booking-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Book Parking Slot</h3>
+            <button class="modal-close" onclick="closeModal('booking-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="info-panel" id="booking-slot-info" style="margin-bottom:16px">
+                Slot: <strong id="bk-slot-info">–</strong>
+            </div>
+            <input type="hidden" id="bk-slot-id">
+            <input type="hidden" id="bk-start-time">
+            <input type="hidden" id="bk-end-time">
+
+            <div class="form-group">
+                <label>Customer Name *</label>
+                <input type="text" id="bk-customer-name" placeholder="Your full name" required>
+                <span class="form-error" id="bk-customer-err"></span>
+            </div>
+            <div class="form-group">
+                <label>Vehicle Number *</label>
+                <input type="text" id="bk-vehicle-number" placeholder="e.g. MH-01-AB-1234" required>
+                <span class="form-error" id="bk-vehicle-err"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Time</label>
+                    <input type="text" id="bk-start-display" disabled style="background:#f8fafc">
+                </div>
+                <div class="form-group">
+                    <label>End Time</label>
+                    <input type="text" id="bk-end-display" disabled style="background:#f8fafc">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('booking-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="confirmBooking()">🚗 Confirm Booking</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/customer.js"></script>
+</body>
+</html>

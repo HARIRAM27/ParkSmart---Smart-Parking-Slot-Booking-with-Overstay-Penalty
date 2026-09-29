@@ -155,6 +155,11 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findBySlotId(slotId);
     }
 
+        @Override
+        public List<Booking> getByUser(Long userId) {
+                return bookingRepository.findByUserId(userId);
+        }
+
     @Override
     public List<?> getAvailableSlots(
             Long lotId,

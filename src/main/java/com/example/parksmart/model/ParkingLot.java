@@ -87,4 +87,15 @@ public class ParkingLot {
     public void setPenaltyUnitMinutes(Integer penaltyUnitMinutes) {
         this.penaltyUnitMinutes = penaltyUnitMinutes;
     }
+
+    // Compatibility aliases for frontend JSON (name <-> lotName)
+    public String getName() {
+        return lotName;
+    }
+
+    public void setName(String name) {
+        if (this.lotName == null || this.lotName.isBlank()) {
+            this.lotName = name;
+        }
+    }
 }

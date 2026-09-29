@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – ParkSmart</title>
+    <script>
+        // Role-aware redirect page – no UI needed
+        (function() {
+            const token = localStorage.getItem('token');
+            const user  = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!token || !user.role) {
+                location.replace('/login.html');
+            } else if (user.role === 'ADMIN') {
+                location.replace('/admin.html');
+            } else if (user.role === 'PARKING_MANAGER') {
+                location.replace('/manager.html');
+            } else {
+                location.replace('/customer.html');
+            }
+        })();
+    </script>
+</head>
+<body></body>
+</html>

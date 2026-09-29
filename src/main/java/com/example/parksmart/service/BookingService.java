@@ -19,6 +19,8 @@ public interface BookingService {
 
     List<Booking> getBySlot(Long slotId);
 
+    List<Booking> getByUser(Long userId);
+
     List<?> getAvailableSlots(
             Long lotId,
             LocalDateTime startTime,
